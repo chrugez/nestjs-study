@@ -5,5 +5,5 @@ export class GetUsersParamDto {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  option?: number;
+  id?: number;
 }

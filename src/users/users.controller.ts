@@ -4,36 +4,34 @@ import {
   DefaultValuePipe,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { PatchUserDto } from './dtos/patch-user-dto';
+import { UsersService } from './users.service';
+import { GetUsersParamDto } from './dtos/get-user-param.dto';
 
 @Controller('users')
 export class UsersController {
+  constructor(
+    // Inject Users Service
+    private readonly usersService: UsersService,
+  ) {}
+
   @Get()
   public getUsers() {
     return 'List of Users';
   }
 
   @Get('/:id')
-  @Get('/:id/{:optional}')
+  // @Get('/:id/{:optional}')
   public getUserID(
-    @Param('id', ParseIntPipe) id: number | undefined,
-    @Param('optional') optional?: number,
-    @Query('limit', new DefaultValuePipe(10)) limit?: number,
+    @Param() getUserParamDto: GetUsersParamDto,
+    @Query('limit', new DefaultValuePipe(10)) limit: number,
   ) {
-    console.log(typeof id, id);
-    console.log(typeof limit, limit);
-    console.log(optional);
-    if (optional) {
-      return `ID is ${id} and optional parameter is ${optional}`;
-    } else {
-      return `ID is ${id} and no optional parameter`;
-    }
+    return this.usersService.findAll(getUserParamDto, limit);
   }
 
   @Post()
