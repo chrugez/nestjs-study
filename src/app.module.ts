@@ -6,9 +6,29 @@ import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/user.entity';
 
 @Module({
-  imports: [UsersModule, PostsModule, AuthModule],
+  imports: [
+    UsersModule,
+    PostsModule,
+    AuthModule,
+    TypeOrmModule.forRootAsync({
+      imports: [],
+      inject: [],
+      useFactory: () => ({
+        type: 'postgres',
+        entities: [User],
+        synchronize: true,
+        port: 5432,
+        username: 'postgres',
+        password: '123456',
+        host: 'localhost',
+        database: 'nestjs-blog',
+      }),
+    }),
+  ],
   controllers: [AppController, PostsController],
   providers: [AppService, PostsService],
 })
