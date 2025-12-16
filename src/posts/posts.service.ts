@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { Repository } from 'typeorm';
@@ -26,16 +26,28 @@ export class PostsService {
   ) {}
 
   public async create(createPostDto: CreatePostDto) {
+    // Find author from database based on authorId
+    const author = await this.usersService.findOneById(createPostDto.authorId);
+    // Check author existed?
+    if (!author) {
+      throw new NotFoundException('User not found');
+    }
     // Create post
-    const post = this.postsRepository.create(createPostDto);
+    const post = this.postsRepository.create({
+      ...createPostDto,
+      author: author,
+    });
     // Return the post
     return await this.postsRepository.save(post);
   }
 
-  public async findAll(userId: string) {
-    const user = this.usersService.findOneById(userId);
-    console.log('user: ', user);
+  public async findAll() {
     const posts = await this.postsRepository.find();
+    return posts;
+  }
+
+  public async findPostbyID(id: number) {
+    const posts = await this.postsRepository.findOneBy({ id });
     return posts;
   }
 

@@ -9,7 +9,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  public login(email: string, password: string, id: string) {
+  public login(email: string, password: string, id: number) {
     // Check user exists database
     const user = this.usersService.findOneById(id);
     console.log(user);

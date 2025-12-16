@@ -20,9 +20,14 @@ export class PostsController {
   // Injecting Posts Service
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('/:userId')
-  public getPosts(@Param('userId') userId: string) {
-    return this.postsService.findAll(userId);
+  @Get()
+  public getPosts() {
+    return this.postsService.findAll();
+  }
+
+  @Get('/:postId')
+  public getPostById(@Param('postId') postId: number) {
+    return this.postsService.findPostbyID(postId);
   }
 
   @ApiOperation({
